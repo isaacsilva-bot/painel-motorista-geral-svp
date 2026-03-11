@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Colaborador</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; padding: 20px; margin: 0; }
+        .container { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 100%; max-width: 400px; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .logo { font-size: 24px; font-weight: bold; color: #1a73e8; }
+        input { width: 100%; padding: 15px; margin: 15px 0; border: 2px solid #eee; border-radius: 10px; box-sizing: border-box; font-size: 16px; outline: none; transition: 0.3s; }
+        input:focus { border-color: #1a73e8; }
+        button { width: 100%; padding: 15px; background: #1a73e8; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; }
+        #resultado { display: none; margin-top: 25px; border-top: 2px solid #f4f7f6; padding-top: 20px; }
+        .info-box { margin-bottom: 15px; }
+        .label { font-size: 12px; color: #888; text-transform: uppercase; display: block; }
+        .value { font-size: 15px; color: #333; font-weight: 500; display: block; margin-top: 2px; }
+        .destaque { color: #1a73e8; font-size: 20px; font-weight: bold; }
+        .error { color: #d93025; text-align: center; display: none; margin-top: 15px; font-weight: 500; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="logo">SVP Transportes</div>
+        <p style="color: #666; font-size: 14px;">Consulte seus dados de coleta</p>
+    </div>
+
+    <input type="text" id="idInput" placeholder="Digite seu ID Pessoal">
+    <button onclick="buscarDados()">PESQUISAR</button>
+
+    <div id="error" class="error">ID não encontrado. Verifique e tente novamente.</div>
+
+    <div id="resultado">
+        <div class="info-box">
+            <span class="label">Nome da Loja</span>
+            <span id="resLoja" class="value"></span>
+        </div>
+        <div class="info-box">
+            <span class="label">Endereço Completo</span>
+            <span id="resEndereco" class="value"></span>
+        </div>
+        <div class="info-box">
+            <span class="label">Horário de Funcionamento</span>
+            <span id="resFuncionamento" class="value"></span>
+        </div>
+        <div class="info-box">
+            <span class="label">Horário da sua Visita</span>
+            <span id="resVisita" class="value"></span>
+        </div>
+        <div class="info-box">
+            <span class="label">Pacotes Coletados</span>
+            <span id="resPacotes" class="value destaque"></span>
+        </div>
+    </div>
+</div>
+
+<script>
+    const URL_PLANILHA = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLptCJKIUDiCVR440Z6ZaJxzvRB1WJeCV36OJfnTQ2nBLECWjlZOqslbedcybCY-4cUQSDmNOCEx0U/pub?gid=950676577&single=true&output=csv";
+
+    async function buscarDados() {
+        const idBuscado = document.getElementById('idInput').value.trim();
+        const resDiv = document.getElementById('resultado');
+        const erroDiv = document.getElementById('error');
+
+        if (!idBuscado) return;
+
+        try {
+            const response = await fetch(URL_PLANILHA);
+            const data = await response.text();
+            const linhas = data.split(/\r?\n/);
+            let dadosEncontrados = null;
+
+            for (let i = 1; i < linhas.length; i++) {
+                // Separa colunas lidando com possíveis vírgulas dentro de endereços
+                const colunas = linhas[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                const limpar = (t) => t ? t.replace(/^"|"$/g, '').trim() : "";
+
+                // Coluna 1 é o ID PESSOAL
+                if (limpar(colunas[1]) === idBuscado) {
+                    dadosEncontrados = {
+                        funcionamento: limpar(colunas[0]),
+                        visita: limpar(colunas[2]),
+                        pacotes: limpar(colunas[3]),
+                        endereco: limpar(colunas[4]),
+                        loja: limpar(colunas[5])
+                    };
+                    break;
+                }
+            }
+
+            if (dadosEncontrados) {
+                document.getElementById('resLoja').innerText = dadosEncontrados.loja;
+                document.getElementById('resEndereco').innerText = dadosEncontrados.endereco;
+                document.getElementById('resFuncionamento').innerText = dadosEncontrados.funcionamento;
+                document.getElementById('resVisita').innerText = dadosEncontrados.visita;
+                document.getElementById('resPacotes').innerText = dadosEncontrados.pacotes;
+
+                resDiv.style.display = 'block';
+                erroDiv.style.display = 'none';
+            } else {
+                resDiv.style.display = 'none';
+                erroDiv.style.display = 'block';
+            }
+        } catch (e) {
+            alert("Erro ao carregar dados. Verifique a internet.");
+        }
+    }
+</script>
+
+</body>
+</html>
