@@ -29,16 +29,15 @@
 
         .app-container { width: 100%; max-width: 450px; }
 
-        /* Estilo da Imagem do Topo */
+        /* AJUSTE NA LOGO: Aumentando o tamanho */
         .logo-topo {
-            width: 100%;
-            max-height: 120px;
-            object-fit: contain;
-            margin-bottom: 15px;
+            width: 100%; /* Ocupa a largura total do container */
+            max-width: 300px; /* Limite de largura para não ficar gigante em telas grandes */
+            height: auto; /* Mantém a proporção original */
+            margin: 0 auto 20px auto; /* Centraliza e dá espaço abaixo */
             display: block;
         }
 
-        /* Card de Aviso e Conscientização */
         .aviso-card {
             background: #ffedd5;
             border: 2px solid var(--primary);
@@ -54,7 +53,6 @@
         .aviso-card p { margin: 0; font-size: 13px; font-weight: 600; line-height: 1.4; color: #7c2d12; }
         .aviso-card strong { color: var(--primary-dark); }
 
-        /* Card de Busca */
         .search-card { 
             background: var(--white); 
             padding: 25px; 
@@ -85,7 +83,6 @@
         }
         button:hover { background: var(--primary-dark); }
 
-        /* Resultado Individual por Card */
         .resultado-item { 
             background: white; 
             padding: 20px; 
