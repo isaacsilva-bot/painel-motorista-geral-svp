@@ -80,3 +80,138 @@
             margin-bottom: 15px; 
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             animation: fadeIn 0.4s ease-out;
+            border-left: 5px solid var(--primary);
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .info-row { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+        .info-row i { color: var(--primary); margin-top: 3px; width: 15px; }
+        .info-content { display: flex; flex-direction: column; }
+        .label { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+        .value { font-size: 14px; font-weight: 600; }
+        
+        .pacotes-badge { 
+            background: #fff7ed; border: 1px dashed var(--primary);
+            padding: 10px; border-radius: 12px; text-align: center; margin-top: 5px;
+        }
+        .pacotes-badge .value { font-size: 20px; color: var(--primary); }
+
+        .error { color: #991b1b; text-align: center; display: none; background: #fee2e2; padding: 15px; border-radius: 12px; }
+        .count-info { text-align: center; font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="aviso-card">
+        <i class="fas fa-exclamation-circle"></i>
+        <p>Você precisa garantir que os pontos de coleta não fiquem com pacotes de hoje para amanhã. Sendo assim, visite-os nos horários de fechamento com uma hora de antecedência.</p>
+    </div>
+
+    <div class="search-card">
+        <div class="brand">
+            <h2>Painel de Atendimento a Pontos de Coleta</h2>
+            <p style="font-size: 12px; margin: 5px 0 0;">Painel DOP Multi-Visitas</p>
+        </div>
+        <div class="input-group">
+            <i class="fas fa-id-card"></i>
+            <input type="text" id="idInput" placeholder="DIGITE SEU ID">
+        </div>
+        <button onclick="buscarDados()">CONSULTAR MEUS PONTOS DE COLETA</button>
+    </div>
+
+    <div id="error" class="error">Nenhum dado encontrado para este ID. Verifique com seu analista ou aguarde 30 minutos para uma nova pesquisa.</div>
+    <div id="count" class="count-info"></div>
+    <div id="listaResultados"></div>
+</div>
+
+<script>
+    const URL_PLANILHA = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLptCJKIUDiCVR440Z6ZaJxzvRB1WJeCV36OJfnTQ2nBLECWjlZOqslbedcybCY-4cUQSDmNOCEx0U/pub?gid=950676577&single=true&output=csv";
+
+    async function buscarDados() {
+        const idBuscado = document.getElementById('idInput').value.trim();
+        const listaDiv = document.getElementById('listaResultados');
+        const erroDiv = document.getElementById('error');
+        const countDiv = document.getElementById('count');
+
+        if (!idBuscado) return;
+
+        listaDiv.innerHTML = "";
+        erroDiv.style.display = 'none';
+        countDiv.innerText = "";
+
+        try {
+            const response = await fetch(URL_PLANILHA);
+            const data = await response.text();
+            const linhas = data.split(/\r?\n/);
+            
+            let encontrados = [];
+
+            for (let i = 1; i < linhas.length; i++) {
+                const colunas = linhas[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                const limpar = (t) => t ? t.replace(/^"|"$/g, '').trim() : "";
+
+                if (limpar(colunas[1]) === idBuscado) {
+                    encontrados.push({
+                        func: limpar(colunas[0]),
+                        visita: limpar(colunas[2]),
+                        pacotes: limpar(colunas[3]),
+                        end: limpar(colunas[4]),
+                        loja: limpar(colunas[5])
+                    });
+                }
+            }
+
+            if (encontrados.length > 0) {
+                countDiv.innerText = `Encontrado(s) ${encontrados.length} ponto(s) de coletas`;
+                
+                encontrados.forEach(item => {
+                    const card = `
+                        <div class="resultado-item">
+                            <div class="info-row">
+                                <i class="fas fa-store"></i>
+                                <div class="info-content">
+                                    <span class="label">Loja</span>
+                                    <span class="value">${item.loja}</span>
+                                </div>
+                            </div>
+                            <div class="info-row">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <div class="info-content">
+                                    <span class="label">Endereço</span>
+                                    <span class="value">${item.end}</span>
+                                </div>
+                            </div>
+                            <div class="info-row">
+                                <i class="fas fa-clock"></i>
+                                <div class="info-content">
+                                    <span class="label">Horário Funcionamento</span>
+                                    <span class="value">${item.func}</span>
+                                </div>
+                            </div>
+                            <div class="info-row">
+                                <i class="fas fa-calendar-check"></i>
+                                <div class="info-content">
+                                    <span class="label">Sua Visita</span>
+                                    <span class="value">${item.visita}</span>
+                                </div>
+                            </div>
+                            <div class="pacotes-badge">
+                                <span class="label">Pacotes Coletados</span>
+                                <div class="value">${item.pacotes}</div>
+                            </div>
+                        </div>
+                    `;
+                    listaDiv.innerHTML += card;
+                });
+            } else {
+                erroDiv.style.display = 'block';
+            }
+        } catch (e) {
+            alert("Erro ao carregar dados.");
+        }
+    }
+</script>
+</body>
+</html>
