@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SVP - Painel de Visitas</title>
+    <title>SVP - Painel de Atendimento</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
@@ -23,26 +23,27 @@
             justify-content: center; 
             min-height: 100vh;
             margin: 0; 
-            padding: 20px;
+            padding: 15px;
             color: var(--text-main);
         }
 
         .app-container { width: 100%; max-width: 450px; }
 
-        /* Estilo do novo card de aviso */
+        /* Card de Aviso e Conscientização */
         .aviso-card {
             background: #ffedd5;
             border: 2px solid var(--primary);
             padding: 15px;
-            border-radius: 16px;
+            border-radius: 18px;
             margin-bottom: 20px;
             display: flex;
             gap: 12px;
             align-items: center;
             box-shadow: 0 4px 6px rgba(249, 115, 22, 0.1);
         }
-        .aviso-card i { color: var(--primary); font-size: 20px; }
+        .aviso-card i { color: var(--primary); font-size: 22px; }
         .aviso-card p { margin: 0; font-size: 13px; font-weight: 600; line-height: 1.4; color: #7c2d12; }
+        .aviso-card strong { color: var(--primary-dark); text-transform: uppercase; font-size: 11px; display: block; margin-bottom: 2px; }
 
         .search-card { 
             background: var(--white); 
@@ -54,7 +55,7 @@
         }
 
         .brand { text-align: center; margin-bottom: 20px; }
-        .brand h2 { margin: 0; font-weight: 800; font-size: 22px; color: var(--primary); }
+        .brand h2 { margin: 0; font-weight: 800; font-size: 20px; color: var(--primary); line-height: 1.2; }
         
         .input-group { position: relative; margin-bottom: 15px; }
         .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--primary); }
@@ -63,15 +64,16 @@
             width: 100%; padding: 16px 16px 16px 45px; 
             border: 2px solid #fed7aa; border-radius: 14px; 
             box-sizing: border-box; font-size: 16px; font-weight: 600;
+            outline: none;
         }
+        input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1); }
 
         button { 
             width: 100%; padding: 16px; background: var(--primary); color: white; 
             border: none; border-radius: 14px; font-weight: 700; cursor: pointer; 
             text-transform: uppercase; letter-spacing: 1px; transition: 0.2s;
         }
-
-        button:hover { background: var(--primary-dark); }
+        button:active { transform: scale(0.98); }
 
         .resultado-item { 
             background: white; 
@@ -80,48 +82,55 @@
             margin-bottom: 15px; 
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             animation: fadeIn 0.4s ease-out;
-            border-left: 5px solid var(--primary);
+            border-left: 6px solid var(--primary);
         }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .info-row { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
-        .info-row i { color: var(--primary); margin-top: 3px; width: 15px; }
+        .info-row { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+        .info-row i { color: var(--primary); margin-top: 3px; width: 18px; text-align: center; }
         .info-content { display: flex; flex-direction: column; }
-        .label { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
-        .value { font-size: 14px; font-weight: 600; }
+        .label { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .value { font-size: 14px; font-weight: 600; line-height: 1.3; }
         
         .pacotes-badge { 
             background: #fff7ed; border: 1px dashed var(--primary);
-            padding: 10px; border-radius: 12px; text-align: center; margin-top: 5px;
+            padding: 12px; border-radius: 12px; text-align: center; margin-top: 8px;
         }
-        .pacotes-badge .value { font-size: 20px; color: var(--primary); }
+        .pacotes-badge .value { font-size: 24px; color: var(--primary); font-weight: 800; }
 
-        .error { color: #991b1b; text-align: center; display: none; background: #fee2e2; padding: 15px; border-radius: 12px; }
-        .count-info { text-align: center; font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 15px; }
+        .error { color: #991b1b; text-align: center; display: none; background: #fee2e2; padding: 15px; border-radius: 12px; font-size: 14px; font-weight: 600; line-height: 1.4; }
+        .count-info { text-align: center; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 15px; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
 <div class="app-container">
     <div class="aviso-card">
-        <i class="fas fa-exclamation-circle"></i>
-        <p>Você precisa garantir que os pontos de coleta não fiquem com pacotes de hoje para amanhã. Sendo assim, visite-os nos horários de fechamento com uma hora de antecedência.</p>
+        <i class="fas fa-bullhorn"></i>
+        <p>
+            <strong>Aviso Importante:</strong>
+            Visite as lojas 1h antes do fechamento. Este painel é um apoio; siga sempre a orientação final do seu <strong>analista</strong>.
+        </p>
     </div>
 
     <div class="search-card">
         <div class="brand">
-            <h2>Painel de Atendimento a Pontos de Coleta</h2>
-            <p style="font-size: 12px; margin: 5px 0 0;">Painel DOP Multi-Visitas</p>
+            <h2>Atendimento a Pontos de Coleta</h2>
+            <p style="font-size: 11px; margin: 5px 0 0; color: var(--text-muted);">Painel DOP - Multi-Visitas</p>
         </div>
         <div class="input-group">
             <i class="fas fa-id-card"></i>
-            <input type="text" id="idInput" placeholder="DIGITE SEU ID">
+            <input type="text" id="idInput" placeholder="DIGITE SEU ID" inputmode="numeric">
         </div>
-        <button onclick="buscarDados()">CONSULTAR MEUS PONTOS DE COLETA</button>
+        <button onclick="buscarDados()">CONSULTAR PONTOS</button>
     </div>
 
-    <div id="error" class="error">Nenhum dado encontrado para este ID. Verifique com seu analista ou aguarde 30 minutos para uma nova pesquisa.</div>
+    <div id="error" class="error">
+        <i class="fas fa-circle-exclamation"></i><br>
+        Nenhum dado encontrado para este ID. Verifique com seu analista ou aguarde a próxima atualização.
+    </div>
+    
     <div id="count" class="count-info"></div>
     <div id="listaResultados"></div>
 </div>
@@ -139,7 +148,7 @@
 
         listaDiv.innerHTML = "";
         erroDiv.style.display = 'none';
-        countDiv.innerText = "";
+        countDiv.innerText = "Consultando base...";
 
         try {
             const response = await fetch(URL_PLANILHA);
@@ -164,7 +173,7 @@
             }
 
             if (encontrados.length > 0) {
-                countDiv.innerText = `Encontrado(s) ${encontrados.length} ponto(s) de coletas`;
+                countDiv.innerText = `${encontrados.length} ponto(s) de coleta localizado(s)`;
                 
                 encontrados.forEach(item => {
                     const card = `
@@ -191,9 +200,9 @@
                                 </div>
                             </div>
                             <div class="info-row">
-                                <i class="fas fa-calendar-check"></i>
+                                <i class="fas fa-truck-loading"></i>
                                 <div class="info-content">
-                                    <span class="label">Sua Visita</span>
+                                    <span class="label">Horário Previsto da Visita</span>
                                     <span class="value">${item.visita}</span>
                                 </div>
                             </div>
@@ -206,10 +215,12 @@
                     listaDiv.innerHTML += card;
                 });
             } else {
+                countDiv.innerText = "";
                 erroDiv.style.display = 'block';
             }
         } catch (e) {
-            alert("Erro ao carregar dados.");
+            countDiv.innerText = "";
+            alert("Erro ao acessar a planilha. Verifique sua conexão.");
         }
     }
 </script>
