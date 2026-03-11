@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SVP - Painel do Motorista</title>
+    <title>SVP - Painel de Visitas</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --bg: #f8fafc;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
+            --primary: #f97316;
+            --primary-dark: #ea580c;
+            --bg: #fff7ed;
+            --text-main: #431407;
+            --text-muted: #9a3412;
             --white: #ffffff;
         }
 
@@ -21,157 +21,90 @@
             background-color: var(--bg); 
             display: flex; 
             justify-content: center; 
-            align-items: flex-start;
             min-height: 100vh;
             margin: 0; 
             padding: 20px;
             color: var(--text-main);
         }
 
-        .app-card { 
+        .app-container { width: 100%; max-width: 450px; }
+
+        .search-card { 
             background: var(--white); 
-            padding: 32px; 
+            padding: 25px; 
             border-radius: 24px; 
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
-            width: 100%; 
-            max-width: 400px; 
-            transition: all 0.3s ease;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            border-top: 6px solid var(--primary);
         }
 
-        .brand { text-align: center; margin-bottom: 30px; }
-        .brand .logo-icon { 
-            background: var(--primary); 
-            color: white; 
-            width: 50px; 
-            height: 50px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            border-radius: 14px; 
-            margin: 0 auto 12px;
-            font-size: 24px;
-        }
-        .brand h2 { margin: 0; font-weight: 700; color: var(--text-main); font-size: 22px; }
-        .brand p { margin: 5px 0 0; color: var(--text-muted); font-size: 14px; }
-
-        .search-area { margin-bottom: 25px; }
-        .input-group { position: relative; }
-        .input-group i { 
-            position: absolute; 
-            left: 15px; 
-            top: 50%; 
-            transform: translateY(-50%); 
-            color: var(--text-muted); 
-        }
+        .brand { text-align: center; margin-bottom: 20px; }
+        .brand h2 { margin: 0; font-weight: 800; font-size: 22px; color: var(--primary); }
+        
+        .input-group { position: relative; margin-bottom: 15px; }
+        .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--primary); }
 
         input { 
-            width: 100%; 
-            padding: 16px 16px 16px 45px; 
-            border: 2px solid #e2e8f0; 
-            border-radius: 14px; 
-            box-sizing: border-box; 
-            font-size: 16px; 
-            outline: none; 
-            transition: all 0.2s; 
-            font-weight: 500;
+            width: 100%; padding: 16px 16px 16px 45px; 
+            border: 2px solid #fed7aa; border-radius: 14px; 
+            box-sizing: border-box; font-size: 16px; font-weight: 600;
         }
-        input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
 
         button { 
-            width: 100%; 
-            padding: 16px; 
-            background: var(--primary); 
-            color: white; 
-            border: none; 
-            border-radius: 14px; 
-            font-weight: 700; 
-            cursor: pointer; 
-            font-size: 16px; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: background 0.2s;
+            width: 100%; padding: 16px; background: var(--primary); color: white; 
+            border: none; border-radius: 14px; font-weight: 700; cursor: pointer; 
+            text-transform: uppercase; letter-spacing: 1px; transition: 0.2s;
         }
+
         button:hover { background: var(--primary-dark); }
-        button:active { transform: scale(0.98); }
 
-        #resultado { display: none; margin-top: 30px; animation: slideUp 0.4s ease-out; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        .data-grid { display: grid; gap: 12px; }
-        .info-card { 
-            background: #f1f5f9; 
-            padding: 16px; 
-            border-radius: 16px; 
-            display: flex; 
-            flex-direction: column;
-            gap: 4px;
+        /* Estilo para os múltiplos resultados */
+        .resultado-item { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 20px; 
+            margin-bottom: 15px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            animation: fadeIn 0.4s ease-out;
+            border-left: 5px solid var(--primary);
         }
-        .info-card i { color: var(--primary); font-size: 14px; margin-bottom: 4px; }
-        .label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-        .value { font-size: 15px; color: var(--text-main); font-weight: 600; }
-        
-        .destaque-card { background: #eff6ff; border: 1px solid #dbeafe; }
-        .destaque-card .value { color: var(--primary); font-size: 24px; }
 
-        .error { color: #dc2626; text-align: center; display: none; margin-top: 20px; font-size: 14px; background: #fee2e2; padding: 12px; border-radius: 10px; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .info-row { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+        .info-row i { color: var(--primary); margin-top: 3px; width: 15px; }
+        .info-content { display: flex; flex-direction: column; }
+        .label { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+        .value { font-size: 14px; font-weight: 600; }
         
-        footer { margin-top: 20px; text-align: center; font-size: 12px; color: var(--text-muted); }
+        .pacotes-badge { 
+            background: #fff7ed; border: 1px dashed var(--primary);
+            padding: 10px; border-radius: 12px; text-align: center; margin-top: 5px;
+        }
+        .pacotes-badge .value { font-size: 20px; color: var(--primary); }
+
+        .error { color: #991b1b; text-align: center; display: none; background: #fee2e2; padding: 15px; border-radius: 12px; }
+        .count-info { text-align: center; font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 15px; }
     </style>
 </head>
 <body>
 
-<div class="app-card">
-    <div class="brand">
-        <div class="logo-icon"><i class="fas fa-truck-fast"></i></div>
-        <h2>SVP Transportes</h2>
-        <p>Portal de Desempenho do Motorista</p>
-    </div>
-
-    <div class="search-area">
+<div class="app-container">
+    <div class="search-card">
+        <div class="brand">
+            <h2>SVP TRANSPORTES</h2>
+            <p style="font-size: 12px; margin: 5px 0 0;">Painel Multi-Visitas</p>
+        </div>
         <div class="input-group">
             <i class="fas fa-id-card"></i>
-            <input type="text" id="idInput" placeholder="Informe seu ID Pessoal" inputmode="numeric">
+            <input type="text" id="idInput" placeholder="DIGITE SEU ID">
         </div>
-        <button onclick="buscarDados()" style="margin-top: 15px;">
-            <i class="fas fa-magnifying-glass"></i> PESQUISAR
-        </button>
+        <button onclick="buscarDados()">CONSULTAR TODAS</button>
     </div>
 
-    <div id="error" class="error">
-        <i class="fas fa-circle-exclamation"></i> ID não localizado na base de dados.
-    </div>
-
-    <div id="resultado">
-        <div class="data-grid">
-            <div class="info-card">
-                <i class="fas fa-store"></i>
-                <span class="label">Loja</span>
-                <span id="resLoja" class="value"></span>
-            </div>
-            <div class="info-card">
-                <i class="fas fa-location-dot"></i>
-                <span class="label">Endereço</span>
-                <span id="resEndereco" class="value"></span>
-            </div>
-            <div class="info-card">
-                <i class="fas fa-clock"></i>
-                <span class="label">Funcionamento</span>
-                <span id="resFuncionamento" class="value"></span>
-            </div>
-            <div class="info-card">
-                <i class="fas fa-user-clock"></i>
-                <span class="label">Sua Visita</span>
-                <span id="resVisita" class="value"></span>
-            </div>
-            <div class="info-card destaque-card">
-                <i class="fas fa-box-open"></i>
-                <span class="label">Pacotes Coletados</span>
-                <span id="resPacotes" class="value"></span>
-            </div>
-        </div>
-    </div>
+    <div id="error" class="error">Nenhum dado encontrado para este ID.</div>
+    <div id="count" class="count-info"></div>
+    <div id="listaResultados"></div>
 </div>
 
 <script>
@@ -179,51 +112,86 @@
 
     async function buscarDados() {
         const idBuscado = document.getElementById('idInput').value.trim();
-        const resDiv = document.getElementById('resultado');
+        const listaDiv = document.getElementById('listaResultados');
         const erroDiv = document.getElementById('error');
+        const countDiv = document.getElementById('count');
 
         if (!idBuscado) return;
+
+        // Limpa resultados anteriores
+        listaDiv.innerHTML = "";
+        erroDiv.style.display = 'none';
+        countDiv.innerText = "";
 
         try {
             const response = await fetch(URL_PLANILHA);
             const data = await response.text();
             const linhas = data.split(/\r?\n/);
-            let encontrado = null;
+            
+            let encontrados = [];
 
             for (let i = 1; i < linhas.length; i++) {
                 const colunas = linhas[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 const limpar = (t) => t ? t.replace(/^"|"$/g, '').trim() : "";
 
                 if (limpar(colunas[1]) === idBuscado) {
-                    encontrado = {
+                    encontrados.push({
                         func: limpar(colunas[0]),
                         visita: limpar(colunas[2]),
                         pacotes: limpar(colunas[3]),
                         end: limpar(colunas[4]),
                         loja: limpar(colunas[5])
-                    };
-                    break;
+                    });
                 }
             }
 
-            if (encontrado) {
-                document.getElementById('resLoja').innerText = encontrado.loja;
-                document.getElementById('resEndereco').innerText = encontrado.end;
-                document.getElementById('resFuncionamento').innerText = encontrado.func;
-                document.getElementById('resVisita').innerText = encontrado.visita;
-                document.getElementById('resPacotes').innerText = encontrado.pacotes;
-
-                resDiv.style.display = 'block';
-                erroDiv.style.display = 'none';
+            if (encontrados.length > 0) {
+                countDiv.innerText = `Encontrado(s) ${encontrados.length} registro(s)`;
+                
+                encontrados.forEach(item => {
+                    const card = `
+                        <div class="resultado-item">
+                            <div class="info-row">
+                                <i class="fas fa-store"></i>
+                                <div class="info-content">
+                                    <span class="label">Loja</span>
+                                    <span class="value">${item.loja}</span>
+                                </div>
+                            </div>
+                            <div class="info-row">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <div class="info-content">
+                                    <span class="label">Endereço</span>
+                                    <span class="value">${item.end}</span>
+                                </div>
+                            </div>
+                            <div class="info-row">
+                                <i class="fas fa-clock"></i>
+                                <div class="info-content">
+                                    <span class="label">Horário Funcionamento</span>
+                                    <span class="value">${item.func}</span>
+                                </div>
+                            </div>
+                            <div class="info-row">
+                                <i class="fas fa-calendar-check"></i>
+                                <div class="info-content">
+                                    <span class="label">Sua Visita</span>
+                                    <span class="value">${item.visita}</span>
+                                </div>
+                            </div>
+                            <div class="pacotes-badge">
+                                <span class="label">Pacotes Coletados</span>
+                                <div class="value">${item.pacotes}</div>
+                            </div>
+                        </div>
+                    `;
+                    listaDiv.innerHTML += card;
+                });
             } else {
-                resDiv.style.display = 'none';
                 erroDiv.style.display = 'block';
             }
         } catch (e) {
-            alert("Erro de conexão.");
+            alert("Erro ao carregar dados.");
         }
     }
 </script>
-
-</body>
-</html>
