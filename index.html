@@ -29,6 +29,15 @@
 
         .app-container { width: 100%; max-width: 450px; }
 
+        /* Estilo da Imagem do Topo */
+        .logo-topo {
+            width: 100%;
+            max-height: 120px;
+            object-fit: contain;
+            margin-bottom: 15px;
+            display: block;
+        }
+
         /* Card de Aviso e Conscientização */
         .aviso-card {
             background: #ffedd5;
@@ -43,8 +52,9 @@
         }
         .aviso-card i { color: var(--primary); font-size: 22px; }
         .aviso-card p { margin: 0; font-size: 13px; font-weight: 600; line-height: 1.4; color: #7c2d12; }
-        .aviso-card strong { color: var(--primary-dark); text-transform: uppercase; font-size: 11px; display: block; margin-bottom: 2px; }
+        .aviso-card strong { color: var(--primary-dark); }
 
+        /* Card de Busca */
         .search-card { 
             background: var(--white); 
             padding: 25px; 
@@ -66,15 +76,16 @@
             box-sizing: border-box; font-size: 16px; font-weight: 600;
             outline: none;
         }
-        input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1); }
+        input:focus { border-color: var(--primary); }
 
         button { 
             width: 100%; padding: 16px; background: var(--primary); color: white; 
             border: none; border-radius: 14px; font-weight: 700; cursor: pointer; 
             text-transform: uppercase; letter-spacing: 1px; transition: 0.2s;
         }
-        button:active { transform: scale(0.98); }
+        button:hover { background: var(--primary-dark); }
 
+        /* Resultado Individual por Card */
         .resultado-item { 
             background: white; 
             padding: 20px; 
@@ -99,18 +110,19 @@
         }
         .pacotes-badge .value { font-size: 24px; color: var(--primary); font-weight: 800; }
 
-        .error { color: #991b1b; text-align: center; display: none; background: #fee2e2; padding: 15px; border-radius: 12px; font-size: 14px; font-weight: 600; line-height: 1.4; }
+        .error { color: #991b1b; text-align: center; display: none; background: #fee2e2; padding: 15px; border-radius: 12px; font-weight: 600; }
         .count-info { text-align: center; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 15px; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
 <div class="app-container">
+    <img src="img.png" alt="Logo SVP" class="logo-topo">
+
     <div class="aviso-card">
-        <i class="fas fa-bullhorn"></i>
+        <i class="fas fa-exclamation-circle"></i>
         <p>
-            <strong>Aviso Importante:</strong>
-            Visite as lojas 1h antes do fechamento. Este painel é um apoio; siga sempre a orientação final do seu <strong>analista</strong>.
+            Visite as lojas 1h antes do fechamento. Este painel é um apoio; siga sempre a orientação do seu <strong>analista</strong>.
         </p>
     </div>
 
@@ -126,11 +138,7 @@
         <button onclick="buscarDados()">CONSULTAR PONTOS</button>
     </div>
 
-    <div id="error" class="error">
-        <i class="fas fa-circle-exclamation"></i><br>
-        Nenhum dado encontrado para este ID. Verifique com seu analista ou aguarde a próxima atualização.
-    </div>
-    
+    <div id="error" class="error">Nenhum dado encontrado para este ID.</div>
     <div id="count" class="count-info"></div>
     <div id="listaResultados"></div>
 </div>
@@ -148,7 +156,7 @@
 
         listaDiv.innerHTML = "";
         erroDiv.style.display = 'none';
-        countDiv.innerText = "Consultando base...";
+        countDiv.innerText = "Buscando informações...";
 
         try {
             const response = await fetch(URL_PLANILHA);
@@ -173,7 +181,7 @@
             }
 
             if (encontrados.length > 0) {
-                countDiv.innerText = `${encontrados.length} ponto(s) de coleta localizado(s)`;
+                countDiv.innerText = `${encontrados.length} ponto(s) de coleta encontrado(s)`;
                 
                 encontrados.forEach(item => {
                     const card = `
@@ -200,9 +208,9 @@
                                 </div>
                             </div>
                             <div class="info-row">
-                                <i class="fas fa-truck-loading"></i>
+                                <i class="fas fa-calendar-check"></i>
                                 <div class="info-content">
-                                    <span class="label">Horário Previsto da Visita</span>
+                                    <span class="label">Sua Visita</span>
                                     <span class="value">${item.visita}</span>
                                 </div>
                             </div>
@@ -220,7 +228,7 @@
             }
         } catch (e) {
             countDiv.innerText = "";
-            alert("Erro ao acessar a planilha. Verifique sua conexão.");
+            alert("Erro ao carregar dados. Verifique sua conexão.");
         }
     }
 </script>
