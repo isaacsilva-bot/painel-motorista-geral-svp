@@ -92,17 +92,17 @@
 <div class="app-container">
     <div class="search-card">
         <div class="brand">
-            <h2>SVP TRANSPORTES</h2>
-            <p style="font-size: 12px; margin: 5px 0 0;">Painel Multi-Visitas</p>
+            <h2>Painel de Atendimento a Pontos de Coleta</h2>
+            <p style="font-size: 12px; margin: 5px 0 0;">Painel DOP Multi-Visitas</p>
         </div>
         <div class="input-group">
             <i class="fas fa-id-card"></i>
             <input type="text" id="idInput" placeholder="DIGITE SEU ID">
         </div>
-        <button onclick="buscarDados()">CONSULTAR TODAS</button>
+        <button onclick="buscarDados()">CONSULTAR MEUS PONTOS DE COLETA</button>
     </div>
 
-    <div id="error" class="error">Nenhum dado encontrado para este ID.</div>
+    <div id="error" class="error">Nenhum dado encontrado para este ID. Verifique com seu analista ou aguarde 30 minutos para uma nova pesquisa.</div>
     <div id="count" class="count-info"></div>
     <div id="listaResultados"></div>
 </div>
@@ -146,7 +146,7 @@
             }
 
             if (encontrados.length > 0) {
-                countDiv.innerText = `Encontrado(s) ${encontrados.length} registro(s)`;
+                countDiv.innerText = `Encontrado(s) ${encontrados.length} ponto(s) de coletas`;
                 
                 encontrados.forEach(item => {
                     const card = `
